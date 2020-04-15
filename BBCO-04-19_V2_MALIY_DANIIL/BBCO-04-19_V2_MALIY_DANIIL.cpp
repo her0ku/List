@@ -37,7 +37,7 @@ Spis* pStart,       // пер-ная. для хра-ния адреса нача
 int count0 = -1;
 
 void input_item();
-void del_item(int);
+void del_item(float);
 void print_list();
 float find_item(float);
 void exit_programm() { exit(1); }
@@ -59,7 +59,7 @@ int main()
 		switch (fmenu(menu))
 		{
 		case 1:input_item(); break;//вызов функции ввода элемента;
-		case 2:int id; cout << "введи id для удаления:"; cin >> id;
+		case 2:float id; cout << "введи id для удаления:"; cin >> id;
 			del_item(id); break;
 		case 3: print_list(); break;//вызов функции печать списка;
 		case 4:int value, id_find; cout << "введи value для поиска:"; cin >> value;
@@ -100,8 +100,6 @@ void input_item()
 		pCurrent->id = count0;
 		pStart = pCurrent; // запомнили адрес начала списка
 		pEnd = pCurrent;   // запомнили адрес последнего элемента списка
-		pCurrent->previous_item = pCurrent;//  для 0-го элемента адрес предыдущего эл-та
-		pCurrent->next_item = pCurrent;    // совпадает с адресом последующего эл-та
 		pTemp = pCurrent;                  // запомнили тек. адрес, потребуется при вводе 
 											// следующего эл-та		
 	}
@@ -110,31 +108,22 @@ void input_item()
 		count0 += 1;
 		pCurrent->id = count0;
 		pEnd = pCurrent;       // запомнили адрес последнего элемента списка
-		pEnd->previous_item = pTemp;// запомнили в текущем адрес предыдущего эл-та
+		pEnd->previous_item = pCurrent;// запомнили в текущем адрес предыдущего эл-та
 		pEnd->next_item = pTemp->next_item;// в поле след. текущего переписали
 											   // след. из предыщего
 
 		pStart->previous_item = pEnd;
 		pTemp->next_item = pCurrent;
-		pTemp = pCurrent;            // запомнили тек. адрес, потребуется при вводе 
-											// следующего эл-та
+		pCurrent = pTemp;
 	}
 }
 
-void del_item(int n) {
+void del_item(float n) {
 	int flag = 0;
-	if (count0 < 0) {
-		cout << "элементов в списке нет" << endl;
-		system("pause"); return;
-	}
-	if (n > count0) {
-		cout << "переданный номер больше махсимального в списке" << endl;
-		system("pause"); return;
-	}
 	pCurrent = pStart;
 	for (int i = 0; i <= count0; i++)
 	{
-		if (pCurrent->id == n)
+		if (pCurrent->d == n)
 		{
 			flag = 1;
 			// берем в найденном элементе адрес предыдущего и в поле следующего
@@ -143,7 +132,7 @@ void del_item(int n) {
 
 			//берем в найденном элементе адрес последующего и в поле предыдущего
 			// следущего элемента записываем значение предыдущего из найденного
-			pCurrent->next_item->previous_item = pCurrent->previous_item;
+			pCurrent->next_item->previous_item = pCurrent;
 			delete pCurrent;
 			count0 -= 1;
 			return;
@@ -161,15 +150,13 @@ void print_list()
 		cout << "элементов в списке нет" << endl;
 		system("pause"); return;
 	}
-	pCurrent = pStart;
 	cout << pStart << endl;
 	for (int i = 0; i <= count0; i++)
 	{
 		cout << pCurrent->previous_item << " : " << pCurrent->id << " : " <<
 			pCurrent->d << " : " << pCurrent->next_item << endl;
-		pCurrent = pCurrent->next_item;
+		//pCurrent = pCurrent->next_item;
 	}
-	cout << pEnd << endl;
 }
 
 float find_item(float value)
